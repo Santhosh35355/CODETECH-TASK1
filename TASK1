@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="quiz-container">
+        <h1>Quiz Application</h1>
+        <div id="question-container">
+            <div id="question"></div>
+            <div id="answer-buttons" class="btn-container"></div>
+        </div>
+        <button id="next-button" class="btn" style="display: none;">Next</button>
+        <div id="result" class="result"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#quiz-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 300px;
+}
+
+.btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px 0;
+}
+
+.btn-container {
+    margin: 10px 0;
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+.result {
+    margin-top: 20px;
+    font-size: 1.2em;
+}
+
+
+// Array of questions for the quiz
+const questions = [
+    {
+        question: "What is the capital of France?",
+        answers: [
+            { text: "Berlin", correct: false },
+            { text: "Madrid", correct: false },
+            { text: "Paris", correct: true },
+            { text: "Lisbon", correct: false }
+        ]
+    },
+    {
+        question: "Which planet is known as the Red Planet?",
+        answers: [
+            { text: "Earth", correct: false },
+            { text: "Mars", correct: true },
+            { text: "Jupiter", correct: false },
+            { text: "Saturn", correct: false }
+        ]
+    },
+    {
+        question: "Who wrote 'Romeo and Juliet'?",
+        answers: [
+            { text: "Charles Dickens", correct: false },
+            { text: "Mark Twain", correct: false },
+            { text: "William Shakespeare", correct: true },
+            { text: "Leo Tolstoy", correct: false }
+        ]
+    },
+];
+
+// Variables to track the current question and score
+let currentQuestionIndex = 0;
+let score = 0;
+
+// Get elements from the HTML
+const questionElement = document.getElementById('question');
+const answerButtons = document.getElementById('answer-buttons');
+const nextButton = document.getElementById('next-button');
+const resultElement = document.getElementById('result');
+
+// Start the quiz
+function startQuiz() {
+    currentQuestionIndex = 0; // Reset current question
+    score = 0; // Reset score
+    nextButton.style.display = 'none'; // Hide the next button
+    resultElement.innerText = ''; // Clear the result
+    showQuestion(questions[currentQuestionIndex]); // Show first question
+}
+
+// Show the current question and answer options
+function showQuestion(question) {
+    questionElement.innerText = question.question; // Display the question
+    answerButtons.innerHTML = ''; // Clear previous answers
+    question.answers.forEach(answer => {
+        const button = document.createElement('button'); // Create a button for each answer
+        button.innerText = answer.text; // Set button text
+        button.classList.add('btn'); // Add class for styling
+        button.addEventListener('click', () => selectAnswer(answer)); // Handle answer selection
+        answerButtons.appendChild(button); // Add button to answer container
+    });
+}
+
+// Handle the answer selection
+function selectAnswer(answer) {
+    if (answer.correct) { // Check if the answer is correct
+        score++; // Increase score
+        alert("Correct!"); // Inform user
+    } else {
+        alert("Wrong answer. Try again!"); // Inform user
+    }
+    nextButton.style.display = 'block'; // Show next button
+}
+
+// Handle the next question or show results
+nextButton.addEventListener('click', () => {
+    currentQuestionIndex++; // Move to next question
+    if (currentQuestionIndex < questions.length) {
+        showQuestion(questions[currentQuestionIndex]); // Show next question
+    } else {
+        showResults(); // Show final results
+    }
+});
+
+// Show the final score
+function showResults() {
+    questionElement.style.display = 'none'; // Hide the question
+    answerButtons.style.display = 'none'; // Hide answers
+    nextButton.style.display = 'none'; // Hide next button
+    resultElement.innerText = `You scored ${score} out of ${questions.length}!`; // Display score
+}
+
+// Start the quiz when the page loads
+startQuiz();
